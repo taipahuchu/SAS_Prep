@@ -1,0 +1,22 @@
+data cars;
+SET sashelp.cars(keep=Origin Type);
+retain High 0;
+IF Origin = 'Asia' Then High = High + 1;
+IF Type = 'Sedan' THEN High = High + 1;
+output;
+RUN;
+DATA MYCARS (drop= Lags High);
+Length lags 3;
+set cars;
+IF _n_ = 1 Then MyHigh = 0;
+lags = lag1(High);
+MyHigh = High - lags;
+
+Run;
+Data MyHigh;
+set MYCARS ;
+ARRAY my[2] Type Origin;
+do i = 1 to 2;
+IF My[i] = 'Sedan' or My[i] = 'Asia' THEN Ohigh +1;
+END;
+RUN;
